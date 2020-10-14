@@ -1,2 +1,0 @@
-# VMWare
-PowerCli commands
