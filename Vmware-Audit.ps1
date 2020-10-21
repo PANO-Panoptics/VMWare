@@ -1,6 +1,9 @@
 ﻿<#
  - Audit Hosts and versinos of vmware
 
+[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12 
+Install-Module PowerShellGet -RequiredVersion 2.2.4 -SkipPublisherCheck
+
 #>
 
 
@@ -12,10 +15,10 @@ Install-Module -Name VMware.PowerCLI
 Set-PowerCLIConfiguration -InvalidCertificateAction Ignore -Confirm:$false
 
 $Now = Get-Date -Format "ddMMyyhhmmss"
-$Sites = "UK", "US1", "US2",  "SG", "NL", "BRZ", "CPT"
-foreach ($Site  in $Sites[3])
+$Sites = "Pano"#, "US1", "US2",  "SG", "NL", "BRZ", "CPT"
+foreach ($Site  in $Sites)
 {
-
+        <#
     switch ($Site) {
     "UK" {$Connection_UK = Connect-VIServer clr-vcs01 -User "Clarionevents\Daveyj" }
     "US1" {$Connection_US1 = Connect-VIServer 10.70.4.200 -User "Clarionevents\Daveyj"}
@@ -24,6 +27,10 @@ foreach ($Site  in $Sites[3])
     "NL" {$Connection_NL = Connect-VIServer nl-vc02.clarionevents.local -User "Administrator@vsphere.local"}
     "BRZ" {$Connection_BRZ = Connect-VIServer 10.17.200.5 } # too old to connect}
     "CPT" {$Connection_CPT = Connect-VIServer 10.30.4.200 -user "administrator@vsphere.local" }
+    }
+    #>
+    switch ($Site) {
+    "Pano" {$Pano = Connect-VIServer uk-pan-vcs01.panoptics.local -User "Panoptics\Daveyj" }
     }
 
 
@@ -75,7 +82,7 @@ foreach ($Site  in $Sites[3])
 
     $Obj |
         Select VMName, HostName, IPAddress, PowerState, ESXHost, ResourcePool, MemoryGB, NumCPU, NumNic, Network, NetworkName, numDisks, DatastoreName, Datastore, DataStorePath, VMHardDisk, ConnectionState, ToolsStatus, OperatingSystem, BootTime, Snapshot |
-            epcsv "E:\Scripts\PowerCli\VMware Environment Audit\$Site-Clarion-Vmware-Env-$Now.csv" -NoTypeInformation
+            epcsv "C:\Users\JuddDavey\Documents\GitHub\Pano-Internal\VMWare\$Site-Vmware-Env-$Now.csv" -NoTypeInformation
 
     # Disconnect
     Disconnect-VIServer -Server $global:DefaultVIServers -Confirm:$false
